@@ -1,0 +1,194 @@
+﻿Scenario, Parent, Alias: Default, Data Storage, Two Pass Calculation, Description, Formula, Formula Description, UDA, Smart List, Data Type, Hierarchy Type, Enable for Dynamic Children, Number of Possible Dynamic Children, Access Granted to Member Creator, Allow Upper Level Entity Input, Process Management Enabled, UUID, Start Year, End Year, Start Period, End Period, Include BegBal, Exchange Table, Aggregation (PL_Alloc), Data Storage (PL_Alloc), Formula (PL_Alloc), Formula Description (PL_Alloc), Aggregation (PL), Data Storage (PL), Formula (PL), Solve Order (PL), Formula Description (PL), Operation
+ACT,Scenario,Actual,store,false,,<none>,<none>,,,unspecified,stored,,,,false,true,f80a6e91-fa16-43f4-a92e-b780ec1ffc53,FY13,FY27,Jan,Dec,true,,+,store,<none>,,+,store,<none>,0,,
+AOP,Scenario,,store,false,,<none>,<none>,,,unspecified,stored,,,,false,true,d5d38c9c-d5ea-4a77-8abf-5bb7b1484674,FY17,FY18,Jan,Dec,true,,~,store,<none>,,~,store,<none>,0,,
+FCST,Scenario,Forecast,store,false,,<none>,<none>,,,unspecified,stored,,,,false,true,e382ac8d-d4b6-45f4-a401-1d0b1e0e0944,FY18,FY18,Jun,Dec,true,,~,store,<none>,,~,store,<none>,0,,
+LTP,Scenario,Long Term Plan,store,false,,<none>,<none>,,,unspecified,none,,,,false,true,39d5f572-3aa9-4599-bb37-ad12859ce824,FY13,FY27,Jan,Dec,true,,~,store,<none>,,~,store,<none>,0,,
+SCE_IND,Scenario,Scenario Indicators,label only,false,,<none>,<none>,,,unspecified,dynamic,,,,false,true,63c83dfc-2d0b-4761-98c6-863fdbad542b,FY13,FY27,Jan,Dec,false,,+,label only,<none>,,+,label only,<none>,0,,
+PER_TYPE,SCE_IND,Period Type,dynamic calc,false,,<none>,<none>,,,unspecified,none,,,,false,true,100408b6-a0c1-44a2-929d-6fc85ed222f1,FY13,FY27,Jan,Dec,false,,+,dynamic calc,<none>,,+,dynamic calc,"CASE 
+WHEN Is([Period].CurrentMember, [Jan]) OR
+     Is([Period].CurrentMember, [Feb]) OR 
+     Is([Period].CurrentMember, [Mar]) OR 
+     Is([Period].CurrentMember, [Apr]) OR
+	 Is([Period].CurrentMember, [May]) OR
+     Is([Period].CurrentMember, [Jun]) OR 
+     Is([Period].CurrentMember, [Jul]) OR 
+     Is([Period].CurrentMember, [Aug]) OR
+     Is([Period].CurrentMember, [Sep]) OR 
+     Is([Period].CurrentMember, [Oct]) OR 
+     Is([Period].CurrentMember, [Nov]) OR 
+     Is([Period].CurrentMember, [Dec]) THEN
+    1
+
+WHEN Is([Period].CurrentMember, [YTD-Jan]) OR
+ 	 Is([Period].CurrentMember, [YTD-Feb]) OR 
+     Is([Period].CurrentMember, [YTD-Mar]) OR 
+     Is([Period].CurrentMember, [YTD-Apr]) OR
+	 Is([Period].CurrentMember, [YTD-May]) OR
+     Is([Period].CurrentMember, [YTD-Jun]) OR 
+     Is([Period].CurrentMember, [YTD-Jul]) OR 
+     Is([Period].CurrentMember, [YTD-Aug]) OR
+     Is([Period].CurrentMember, [YTD-Sep]) OR 
+     Is([Period].CurrentMember, [YTD-Oct]) OR 
+     Is([Period].CurrentMember, [YTD-Nov]) OR 
+     Is([Period].CurrentMember, [YTD-Dec]) THEN
+     2
+END",0,,
+LFL,Scenario,Like for like,label only,false,,<none>,<none>,,,unspecified,dynamic,,,,false,true,03338486-9065-4ed2-a02b-ab941c0fd1ed,FY13,FY27,Jan,Dec,true,,~,label only,<none>,,~,label only,<none>,0,,
+AOP_at_ACT_rate,LFL,AOP at Actual rates,dynamic calc,false,,<none>,<none>,,,unspecified,stored,,,,false,true,6883d8ec-b015-4b03-a566-feb6e9024700,FY13,FY27,Jan,Dec,true,,~,dynamic calc,"IF(@ISMBR(""Group_curr_ILS""))
+	""AOP""->""MANU""->""Tech_Local_curr"" * ""A_EX_RATES""->
+    ""CC_ND""->""PC_ND""->""CO_ND""->""PG_ND""->""CU_ND""->""BR_ND""->""MANU_CORP""->""ACT""->""VF""->@MEMBER(@CONCATENATE(""CUR"",@SUBSTRING(@ATTRIBUTESVAL(""ATT_CURR""),3 )));
+ELSEIF(@ISMBR(""Group_curr_EUR""))
+	""AOP""->""MANU""->""Tech_Local_curr"" * ""A_EX_RATES""->
+    ""CC_ND""->""PC_ND""->""CO_ND""->""PG_ND""->""CU_ND""->""BR_ND""->""MANU_CORP""->""ACT""->""VF""->@MEMBER(@CONCATENATE(""CUR"",@SUBSTRING(@ATTRIBUTESVAL(""ATT_CURR""),3 ))) /
+    ""A_EX_RATES""->""CC_ND""->""PC_ND""->""CO_ND""->""PG_ND""->""CU_ND""->""BR_ND""->""MANU_CORP""->""ACT""->""VF""->""CUR_EURO"";
+ELSEIF(@ISMBR(""Tech_Local_curr"") OR @ISMBR(@MEMBER(@CONCATENATE(""CUR"",@SUBSTRING(@ATTRIBUTESVAL(""ATT_CURR""),3 )))) )
+	""AOP""->""MANU""->""Tech_Local_curr"";
+ENDIF",,~,dynamic calc,"IIF (Is([Currency].CurrentMember,[Group_curr_ILS]) ,
+	(AOP,MANU,Tech_Local_curr)  *
+	(A_EX_RATES, CC_ND,PC_ND,CO_ND,PG_ND,CU_ND,BR_ND,MANU_CORP,ACT,VF, StrToMbr(Concat(""CUR"",Substring(ProfitCenter.CurrentMember.ATT_CURR,4)))),
+IIF (Is([Currency].CurrentMember,[Group_curr_EUR]) ,
+	(AOP,MANU,Tech_Local_curr)  *
+	(A_EX_RATES, CC_ND,PC_ND,CO_ND,PG_ND,CU_ND,BR_ND,MANU_CORP,ACT,VF, StrToMbr(Concat(""CUR"",Substring(ProfitCenter.CurrentMember.ATT_CURR,4))))/
+	(A_EX_RATES,CC_ND,PC_ND,CO_ND,PG_ND,CU_ND,BR_ND,MANU_CORP,ACT,VF,CUR_EURO),
+IIF (Is([Currency].CurrentMember,[Tech_Local_curr]) OR Is([Currency].CurrentMember,StrToMbr(Concat(""CUR"",Substring(ProfitCenter.CurrentMember.ATT_CURR,4)))),
+	(AOP,MANU,Tech_Local_curr),
+    MISSING)))",0,,
+AOP_at_ACT_rate_imp,LFL,AOP at Actual rates impact,dynamic calc,false,,<none>,<none>,,,unspecified,stored,,,,false,true,74cce677-36b4-4c70-b31d-8d8b75ff539f,FY13,FY27,Jan,Dec,true,,~,dynamic calc,<none>,,~,dynamic calc,"IIF(NOT IsAncestor([IND],[Account].Dimension.CurrentMember),[AOP] - [AOP_at_ACT_rate], MISSING)",0,,
+AOP_at_ACT_rate_var,LFL,AOP at Actual real variance,dynamic calc,true,,<none>,<none>,,,percentage,stored,,,,false,true,2c35c92f-941a-466b-b02b-1bc00b036274,FY13,FY27,Jan,Dec,true,,~,dynamic calc,"IF(@ISMBR(@LIST(""BCS"",""LOC"",""ALLOCATION"")))
+  IF (NOT @ISMBR(@REMOVE(@IDESCENDANTS(""IND""),@LIST(""A_MANUF_C"",""A_GS""))))
+  (""ACT""->""VF"" - ""AOP_at_ACT_rate"")/""AOP_at_ACT_rate"";
+  ENDIF
+ENDIF",,~,dynamic calc,"IIF(Is([Source].CurrentMember,BCS) OR
+	Is([Source].CurrentMember, LOC) OR
+	Is([Source].CurrentMember, ALLOCATION),
+		IIF(NOT IsAncestor([IND],[Account].Dimension.CurrentMember),((ACT,VF) - [AOP_at_ACT_rate])/AOP_at_ACT_rate, MISSING),MISSING)",0,,
+FCST_at_ACT_rate,LFL,Forectast at Actual rates,dynamic calc,false,,<none>,<none>,,,unspecified,stored,,,,false,true,5d6f9e6f-41fd-4249-8319-060d1acecfa7,FY13,FY27,Jan,Dec,true,,~,dynamic calc,"IF(@ISMBR(""Group_curr_ILS""))
+	""FCST""->""Tech_Local_curr"" * ""A_EX_RATES""->
+    ""CC_ND""->""PC_ND""->""CO_ND""->""PG_ND""->""CU_ND""->""BR_ND""->""MANU_CORP""->""ACT""->""VF""->@MEMBER(@CONCATENATE(""CUR"",@SUBSTRING(@ATTRIBUTESVAL(""ATT_CURR""),3 )));
+ELSEIF(@ISMBR(""Group_curr_EUR""))
+	""FCST""->""Tech_Local_curr"" * ""A_EX_RATES""->
+    ""CC_ND""->""PC_ND""->""CO_ND""->""PG_ND""->""CU_ND""->""BR_ND""->""MANU_CORP""->""ACT""->""VF""->@MEMBER(@CONCATENATE(""CUR"",@SUBSTRING(@ATTRIBUTESVAL(""ATT_CURR""),3 ))) /
+    ""A_EX_RATES""->""CC_ND""->""PC_ND""->""CO_ND""->""PG_ND""->""CU_ND""->""BR_ND""->""MANU_CORP""->""ACT""->""VF""->""CUR_EURO"";
+ELSEIF(@ISMBR(""Tech_Local_curr"") OR @ISMBR(@MEMBER(@CONCATENATE(""CUR"",@SUBSTRING(@ATTRIBUTESVAL(""ATT_CURR""),3 )))) )
+	""FCST""->""Tech_Local_curr"";
+ENDIF",,~,dynamic calc,"IIF (Is([Currency].CurrentMember,[Group_curr_ILS]) ,
+	(FCST,Tech_Local_curr)  *
+	(A_EX_RATES, CC_ND,PC_ND,CO_ND,PG_ND,CU_ND,BR_ND,MANU_CORP,ACT,VF, StrToMbr(Concat(""CUR"",Substring(ProfitCenter.CurrentMember.ATT_CURR,4)))),
+IIF (Is([Currency].CurrentMember,[Group_curr_EUR]) ,
+	(FCST,Tech_Local_curr)  *
+	(A_EX_RATES, CC_ND,PC_ND,CO_ND,PG_ND,CU_ND,BR_ND,MANU_CORP,ACT,VF, StrToMbr(Concat(""CUR"",Substring(ProfitCenter.CurrentMember.ATT_CURR,4))))/
+	(A_EX_RATES,CC_ND,PC_ND,CO_ND,PG_ND,CU_ND,BR_ND,MANU_CORP,ACT,VF,CUR_EURO),
+IIF (Is([Currency].CurrentMember,[Tech_Local_curr]) OR Is([Currency].CurrentMember,StrToMbr(Concat(""CUR"",Substring(ProfitCenter.CurrentMember.ATT_CURR,4)))),
+	(FCST,Tech_Local_curr),
+    MISSING)))",0,,
+FCST_at_ACT_rate_imp,LFL,Forectast at Actual rates impact,dynamic calc,false,,<none>,<none>,,,unspecified,stored,,,,false,true,7a860e9f-9ec2-4b09-b990-f5d89c3a0d97,FY13,FY27,Jan,Dec,true,,~,dynamic calc,"IF (NOT @ISMBR(@REMOVE(@IDESCENDANTS(""IND""),@LIST(""A_MANUF_C"",""A_GS""))))
+""FCST"" - ""FCST_at_ACT_rate"";
+ENDIF",,~,dynamic calc,"IIF(NOT IsAncestor([IND],[Account].Dimension.CurrentMember),[FCST] - [FCST_at_ACT_rate], MISSING)",0,,
+FCST_at_ACT_rate_var,LFL,Forectast at Actual real variance,dynamic calc,true,,<none>,<none>,,,percentage,stored,,,,false,true,e2feb017-72cd-4b4f-866a-d97baa3db91e,FY13,FY27,Jan,Dec,true,,~,dynamic calc,"IF(@ISMBR(@LIST(""BCS"",""LOC"",""ALLOCATION"")))
+  IF (NOT @ISMBR(@REMOVE(@IDESCENDANTS(""IND""),@LIST(""A_MANUF_C"",""A_GS""))))
+  (""FCST"" - ""FCST_at_ACT_rate"")/""FCST_at_ACT_rate"";
+  ENDIF
+ENDIF",,~,dynamic calc,"IIF(Is([Source].CurrentMember,BCS) OR
+	Is([Source].CurrentMember, LOC) OR
+	Is([Source].CurrentMember, ALLOCATION),
+		IIF(NOT IsAncestor([IND],[Account].Dimension.CurrentMember),([FCST] - [FCST_at_ACT_rate])/[FCST_at_ACT_rate], MISSING),MISSING)",0,,
+ACT-1_at_ACT_rate,LFL,Actual Y-1 at Actual rates,dynamic calc,false,,<none>,<none>,,,unspecified,stored,,,,false,true,82ce3c05-08e1-4bd4-a829-0337bdd700b4,FY13,FY27,Jan,Dec,true,,~,dynamic calc,"IF(@ISMBR(""Group_curr_ILS""))
+	@PRIOR(""ACT""->""Tech_Local_curr"", 1, @RELATIVE(""Years"",0)) * ""A_EX_RATES""->
+    ""CC_ND""->""PC_ND""->""CO_ND""->""PG_ND""->""CU_ND""->""BR_ND""->""MANU_CORP""->""ACT""->@MEMBER(@CONCATENATE(""CUR"",@SUBSTRING(@ATTRIBUTESVAL(""ATT_CURR""),3 )));
+ELSEIF(@ISMBR(""Group_curr_EUR""))
+	@PRIOR(""ACT""->""Tech_Local_curr"", 1, @RELATIVE(""Years"",0)) * ""A_EX_RATES""->
+    ""CC_ND""->""PC_ND""->""CO_ND""->""PG_ND""->""CU_ND""->""BR_ND""->""MANU_CORP""->""ACT""->@MEMBER(@CONCATENATE(""CUR"",@SUBSTRING(@ATTRIBUTESVAL(""ATT_CURR""),3 ))) /
+    ""A_EX_RATES""->""CC_ND""->""PC_ND""->""CO_ND""->""PG_ND""->""CU_ND""->""BR_ND""->""MANU_CORP""->""ACT""->""CUR_EURO"";
+ELSEIF(@ISMBR(""Tech_Local_curr"") OR @ISMBR(@MEMBER(@CONCATENATE(""CUR"",@SUBSTRING(@ATTRIBUTESVAL(""ATT_CURR""),3 )))) )
+	@PRIOR(""ACT""->""Tech_Local_curr"", 1, @RELATIVE(""Years"",0));
+ENDIF",,~,dynamic calc,"Case [Currency].CurrentMember
+	When [Group_curr_ILS] then
+		(Years.CurrentMember.Lag(1, LEVEL),[Tech_Local_curr],[ACT]).Value *
+		(A_EX_RATES, CC_ND,PC_ND,CO_ND,PG_ND,CU_ND,BR_ND,MANU_CORP,ACT, StrToMbr(Concat(""CUR"",Substring(ProfitCenter.CurrentMember.ATT_CURR,4))))
+	When [Group_curr_EUR] then
+		(Years.CurrentMember.Lag(1, LEVEL),[Tech_Local_curr],[ACT]).Value *
+		(A_EX_RATES, CC_ND,PC_ND,CO_ND,PG_ND,CU_ND,BR_ND,MANU_CORP,ACT, StrToMbr(Concat(""CUR"",Substring(ProfitCenter.CurrentMember.ATT_CURR,4))))/
+		(A_EX_RATES,CC_ND,PC_ND,CO_ND,PG_ND,CU_ND,BR_ND,MANU_CORP,ACT,CUR_EURO)
+	When [Tech_Local_curr] then
+		(Years.CurrentMember.Lag(1, LEVEL),[Tech_Local_curr],[ACT]).Value
+	When StrToMbr(Concat(""CUR"",Substring(ProfitCenter.CurrentMember.ATT_CURR,4))) then
+		(Years.CurrentMember.Lag(1, LEVEL),[Tech_Local_curr],[ACT]).Value
+End",0,,
+ACT-1_at_ACT_rate_imp,LFL,Actual Y-1 at Actual rates impact,dynamic calc,false,,<none>,<none>,,,unspecified,stored,,,,false,true,d66711b0-bcfc-4b07-9010-c9ae209161ae,FY13,FY27,Jan,Dec,true,,~,dynamic calc,"IF (NOT @ISMBR(@REMOVE(@IDESCENDANTS(""IND""),@LIST(""A_MANUF_C"",""A_GS""))))
+  @PRIOR(""ACT"", 1, @RELATIVE(""Years"",0)) - ""ACT-1_at_ACT_rate"";
+ENDIF",,~,dynamic calc,"IIF(NOT IsAncestor([IND],[Account].Dimension.CurrentMember),([ACT],Years.CurrentMember.Lag(1, LEVEL)).value - [ACT-1_at_ACT_rate], MISSING)",0,,
+ACT-1_at_ACT_rate_var,LFL,Actual Y-1 at Actual real variance,dynamic calc,true,,<none>,<none>,,,percentage,stored,,,,false,true,b49df40a-78d7-4e4e-9b03-183d3cf38ba6,FY13,FY27,Jan,Dec,true,,~,dynamic calc,"IF (NOT @ISMBR(@REMOVE(@IDESCENDANTS(""IND""),@LIST(""A_MANUF_C"",""A_GS""))))
+  (@PRIOR(""ACT"", 1, @RELATIVE(""Years"",0)) - ""ACT-1_at_ACT_rate"")/""ACT-1_at_ACT_rate"";
+  ENDIF",,~,dynamic calc,"IIF(NOT IsAncestor([IND],[Account].Dimension.CurrentMember),(([ACT],Years.CurrentMember.Lag(1, LEVEL)).value - [ACT-1_at_ACT_rate])/ACT-1_at_ACT_rate, MISSING)",0,,
+FCST-1_at_AOP_rate,LFL,Forecast Y-1 at AOP rates,dynamic calc,false,,<none>,<none>,,,unspecified,stored,,,,false,true,4e2178ec-4a95-4372-94fa-02623fab96a4,FY13,FY27,Jan,Dec,true,,~,dynamic calc,"IF(@ISMBR(""Group_curr_ILS""))
+	@PRIOR(""FCST""->""Tech_Local_curr"", 1, @RELATIVE(""Years"",0)) * ""A_EX_RATES""->
+    ""CC_ND""->""PC_ND""->""CO_ND""->""PG_ND""->""CU_ND""->""BR_ND""->""MANU_CORP""->""WV""->""AOP""->@MEMBER(@CONCATENATE(""CUR"",@SUBSTRING(@ATTRIBUTESVAL(""ATT_CURR""),3 )));
+ELSEIF(@ISMBR(""Group_curr_EUR""))
+	@PRIOR(""FCST""->""Tech_Local_curr"", 1, @RELATIVE(""Years"",0)) * ""A_EX_RATES""->
+    ""CC_ND""->""PC_ND""->""CO_ND""->""PG_ND""->""CU_ND""->""BR_ND""->""MANU_CORP""->""WV""->""AOP""->@MEMBER(@CONCATENATE(""CUR"",@SUBSTRING(@ATTRIBUTESVAL(""ATT_CURR""),3 ))) /
+    ""A_EX_RATES""->""CC_ND""->""PC_ND""->""CO_ND""->""PG_ND""->""CU_ND""->""BR_ND""->""MANU_CORP""->""WV""->""AOP""->""CUR_EURO"";
+ELSEIF(@ISMBR(""Tech_Local_curr"") OR @ISMBR(@MEMBER(@CONCATENATE(""CUR"",@SUBSTRING(@ATTRIBUTESVAL(""ATT_CURR""),3 )))) )
+	@PRIOR(""FCST""->""Tech_Local_curr"", 1, @RELATIVE(""Years"",0));
+ENDIF",,~,dynamic calc,"Case [Currency].CurrentMember
+	When [Group_curr_ILS] then
+		(Years.CurrentMember.Lag(1, LEVEL),[Tech_Local_curr],[FCST]).Value *
+		(A_EX_RATES, CC_ND,PC_ND,CO_ND,PG_ND,CU_ND,BR_ND,MANU_CORP,WV,AOP, StrToMbr(Concat(""CUR"",Substring(ProfitCenter.CurrentMember.ATT_CURR,4))))
+	When [Group_curr_EUR] then
+		(Years.CurrentMember.Lag(1, LEVEL),[Tech_Local_curr],[FCST]).Value *
+		(A_EX_RATES, CC_ND,PC_ND,CO_ND,PG_ND,CU_ND,BR_ND,MANU_CORP,WV,AOP, StrToMbr(Concat(""CUR"",Substring(ProfitCenter.CurrentMember.ATT_CURR,4))))/
+		(A_EX_RATES,CC_ND,PC_ND,CO_ND,PG_ND,CU_ND,BR_ND,MANU_CORP,WV,AOP,CUR_EURO)
+	When [Tech_Local_curr] then
+		(Years.CurrentMember.Lag(1, LEVEL),[Tech_Local_curr],[FCST]).Value
+	When StrToMbr(Concat(""CUR"",Substring(ProfitCenter.CurrentMember.ATT_CURR,4))) then
+		(Years.CurrentMember.Lag(1, LEVEL),[Tech_Local_curr],[FCST]).Value
+End",0,,
+FCST-1_at_AOP_rate_imp,LFL,Forecast Y-1 at AOP rates impact,dynamic calc,false,,<none>,<none>,,,unspecified,stored,,,,false,true,64d65ffc-e1dc-4b04-b743-1280be26da26,FY13,FY27,Jan,Dec,true,,~,dynamic calc,"IF (NOT @ISMBR(@REMOVE(@IDESCENDANTS(""IND""),@LIST(""A_MANUF_C"",""A_GS""))))
+  @PRIOR(""FCST"", 1, @RELATIVE(""Years"",0)) - ""FCST-1_at_AOP_rate"";
+ENDIF",,~,dynamic calc,<none>,0,,
+FCST-1_at_AOP_rate_var,LFL,Forecast Y-1 at AOP real variance,dynamic calc,true,,<none>,<none>,,,percentage,stored,,,,false,true,f9233f5c-1e5c-4562-b337-b60037bba7c7,FY13,FY27,Jan,Dec,true,,~,dynamic calc,"IF (NOT @ISMBR(@REMOVE(@IDESCENDANTS(""IND""),@LIST(""A_MANUF_C"",""A_GS""))))
+  (@PRIOR(""FCST""->""Tech_Local_curr"", 1, @RELATIVE(""Years"",0)) - ""FCST-1_at_AOP_rate"")/""FCST-1_at_AOP_rate"";
+ENDIF",,~,dynamic calc,"IIF(NOT IsAncestor([IND],[Account].Dimension.CurrentMember),(([FCST],Years.CurrentMember.Lag(1, LEVEL)).value - [FCST-1_at_AOP_rate])/[FCST-1_at_AOP_rate], MISSING)",0,,
+TD_at_AOP_rate,LFL,TopDown at AOP rates,dynamic calc,false,,<none>,<none>,,,unspecified,stored,,,,false,true,8e4a34fa-e324-42dd-96e5-6147212279ce,FY13,FY27,Jan,Dec,true,,~,dynamic calc,"IF(@ISMBR(""Group_curr_ILS""))
+	""AOP""->""TDV""->""Tech_Local_curr"" * ""A_EX_RATES""->
+    ""CC_ND""->""PC_ND""->""CO_ND""->""PG_ND""->""CU_ND""->""BR_ND""->""MANU_CORP""->""AOP""->@MEMBER(@CONCATENATE(""CUR"",@SUBSTRING(@ATTRIBUTESVAL(""ATT_CURR""),3 )));
+ELSEIF(@ISMBR(""Group_curr_EUR""))
+	""AOP""->""TDV""->""Tech_Local_curr"" * ""A_EX_RATES""->
+    ""CC_ND""->""PC_ND""->""CO_ND""->""PG_ND""->""CU_ND""->""BR_ND""->""MANU_CORP""->""AOP""->@MEMBER(@CONCATENATE(""CUR"",@SUBSTRING(@ATTRIBUTESVAL(""ATT_CURR""),3 ))) /
+    ""A_EX_RATES""->""CC_ND""->""PC_ND""->""CO_ND""->""PG_ND""->""CU_ND""->""BR_ND""->""MANU_CORP""->""AOP""->""CUR_EURO"";
+ELSEIF(@ISMBR(""Tech_Local_curr"") OR @ISMBR(@MEMBER(@CONCATENATE(""CUR"",@SUBSTRING(@ATTRIBUTESVAL(""ATT_CURR""),3 )))) )
+	""AOP""->""TDV""->""Tech_Local_curr"";
+ENDIF",,~,dynamic calc,"IIF (Is([Currency].CurrentMember,[Group_curr_ILS]) ,
+	(AOP,TDV,Tech_Local_curr)  *
+	(A_EX_RATES, CC_ND,PC_ND,CO_ND,PG_ND,CU_ND,BR_ND,MANU_CORP,AOP, StrToMbr(Concat(""CUR"",Substring(ProfitCenter.CurrentMember.ATT_CURR,4)))),
+IIF (Is([Currency].CurrentMember,[Group_curr_EUR]) ,
+	(AOP,TDV,Tech_Local_curr)  *
+	(A_EX_RATES, CC_ND,PC_ND,CO_ND,PG_ND,CU_ND,BR_ND,MANU_CORP,AOP, StrToMbr(Concat(""CUR"",Substring(ProfitCenter.CurrentMember.ATT_CURR,4))))/
+	(A_EX_RATES,CC_ND,PC_ND,CO_ND,PG_ND,CU_ND,BR_ND,MANU_CORP,AOP,CUR_EURO),
+IIF (Is([Currency].CurrentMember,[Tech_Local_curr]) OR Is([Currency].CurrentMember,StrToMbr(Concat(""CUR"",Substring(ProfitCenter.CurrentMember.ATT_CURR,4)))),
+	(AOP,TDV,Tech_Local_curr),
+    MISSING)))",0,,
+TD_at_AOP_rate_imp,LFL,TopDown at AOP rates impact,dynamic calc,false,,<none>,<none>,,,unspecified,stored,,,,false,true,36802905-1f65-4fbc-bc6d-c1e66420b969,FY13,FY27,Jan,Dec,true,,~,dynamic calc,"IF (NOT @ISMBR(@REMOVE(@IDESCENDANTS(""IND""),@LIST(""A_MANUF_C"",""A_GS""))))
+	IF(@ISMBR(""TDV""))
+		""AOP"" - ""TD_at_AOP_rate"";
+	ENDIF
+ENDIF",,~,dynamic calc,"IIF(NOT IsAncestor([IND],[Account].Dimension.CurrentMember),IIF(Is([Version].CurrentMember,TDV),[AOP] - [TD_at_AOP_rate], MISSING), MISSING)",0,,
+TD_at_AOP_rate_var,LFL,TopDown vs AOP real variance,dynamic calc,true,,<none>,<none>,,,percentage,stored,,,,false,true,434b98c7-6064-4738-9c63-ecf36dd50a49,FY13,FY27,Jan,Dec,true,,~,dynamic calc,"IF (NOT @ISMBR(@REMOVE(@IDESCENDANTS(""IND""),@LIST(""A_MANUF_C"",""A_GS""))))
+	IF(@ISMBR(""TDV""))
+		(""AOP"" - ""TD_at_AOP_rate"")/""TD_at_AOP_rate"";
+	ENDIF
+ENDIF",,~,dynamic calc,"IIF(NOT IsAncestor([IND],[Account].Dimension.CurrentMember),IIF(Is([Version].CurrentMember,TDV),([AOP] - [TD_at_AOP_rate])/[TD_at_AOP_rate], MISSING), MISSING)",0,,
+Var_scen,Scenario,Variance Scenarios,label only,false,,<none>,<none>,,,unspecified,dynamic,true,10,inherit,false,true,e8797f31-8d0f-4afa-bfe6-96bdf7c93f44,FY13,FY27,Jan,Dec,true,,~,label only,<none>,,~,label only,<none>,0,,
+ACT_AOPv,Var_scen,Actual vs AOP,dynamic calc,false,,<none>,<none>,,,unspecified,stored,,,,false,true,a6af3aae-2617-43f8-921d-dce10286f859,FY13,FY27,Jan,Dec,true,,~,dynamic calc,"""ACT""->""VF"" - ""AOP""->""WV"";",,~,dynamic calc,"([ACT],[VF])-([AOP],[WV])",0,,
+ACT_AOPp,Var_scen,Actual vs AOP (%),dynamic calc,true,,<none>,<none>,,,percentage,stored,,,,false,true,7f86eeb3-aeca-4598-8641-67df5ef377be,FY13,FY27,Jan,Dec,true,,~,dynamic calc,"(""ACT""->""VF""-""AOP""->""WV"")/""ACT""->""VF"";",,~,dynamic calc,"((ROUND(([ACT],[VF]), 2)-ROUND(([AOP],[WV]), 2))/ROUND(([AOP],[WV]), 2))*100",0,,
+ACT_FCSTv,Var_scen,Actual vs Forecast,dynamic calc,false,,<none>,<none>,,,unspecified,stored,,,,false,true,be902b92-c172-4bcd-afc0-20271ceb0090,FY13,FY27,Jan,Dec,true,,~,dynamic calc,"""ACT""->""VF"" - ""FCST""->""WV"";",,~,dynamic calc,"([ACT],[VF])-([FCST],[WV])",0,,
+ACT_FCSTp,Var_scen,Actual vs Forecast (%),dynamic calc,true,,<none>,<none>,,,percentage,none,,,,false,true,aa6386c5-e04d-4304-940c-0319dd266827,FY13,FY27,Jan,Dec,true,,~,dynamic calc,"(""ACT""->""VF""-""FCST""->""WV"")/""ACT""->""VF"";",,~,dynamic calc,"((ROUND(([ACT],[VF]), 2)-ROUND(([FCST],[WV]), 2))/ROUND(([FCST],[WV]), 2))*100",0,,
+AOP_FCSTv,Var_scen,AOP vs Forecast,dynamic calc,false,,<none>,<none>,,,unspecified,none,,,,false,true,4f2cb9ba-afd2-49d1-b1a7-22539610d22d,FY13,FY27,Jan,Dec,true,,~,dynamic calc,"""AOP""->""WV""-""FCST"";",,~,dynamic calc,"([AOP],[WV])-[FCST]",0,,
+AOP_FCSTp,Var_scen,AOP vs Forecast (%),dynamic calc,true,,<none>,<none>,,,percentage,none,,,,false,true,0965b789-b2cc-4e08-b821-a1cb3203b67f,FY13,FY27,Jan,Dec,true,,~,dynamic calc,"(""AOP""->""WV""-""FCST"")/""AOP"";",,~,dynamic calc,"(ROUND(([AOP],[WV]), 2)-ROUND(([FCST],[WV]), 2)/ROUND(([FCST],[WV]), 2))*100",0,,
+ACT_ACT-1v,Var_scen,Actual vs Actual Y-1,dynamic calc,false,,<none>,<none>,,,unspecified,none,,,,false,true,d45fc432-8869-479a-a87c-c64983d869da,FY13,FY27,Jan,Dec,true,,~,dynamic calc,"""ACT"" - @PRIOR (""ACT"" , 1, @RELATIVE(""Years"",0));",,~,dynamic calc,"[ACT] - (Years.CurrentMember.Lag(1, LEVEL),[ACT]).Value",0,,
+ACT_ACT-1p,Var_scen,Actual vs Actual Y-1 (%),dynamic calc,true,,<none>,<none>,,,percentage,none,,,,false,true,387bb4e9-a66c-43f0-9add-e7d1d741d53c,FY13,FY27,Jan,Dec,true,,~,dynamic calc,"(""ACT"" - @PRIOR (""ACT"" , 1, @RELATIVE(""Years"",0)))/ ""ACT"";",,~,dynamic calc,"(([ACT] - (Years.CurrentMember.Lag(1, LEVEL),[ACT]).Value)/ (Years.CurrentMember.Lag(1, LEVEL),[ACT]).Value)*100 /* (Years.CurrentMember.Lag(1, LEVEL),[ACT]).Value */",0,,
+ACT_ACT-2v,Var_scen,Actual vs Actual Y-2,dynamic calc,false,,<none>,<none>,,,unspecified,none,,,,false,true,573e615d-e169-4784-94c6-b362ab89a89f,FY13,FY27,Jan,Dec,true,,~,dynamic calc,"""ACT"" - @PRIOR (""ACT"" , 2, @RELATIVE(""Years"",0));",,~,dynamic calc,"[ACT] - (Years.CurrentMember.Lag(2, LEVEL),[ACT]).Value",0,,
+ACT_ACT-2p,Var_scen,Actual vs Actual Y-2 (%),dynamic calc,true,,<none>,<none>,,,percentage,none,,,,false,true,079f07ea-af64-45f1-8e31-903e043d71f2,FY13,FY27,Jan,Dec,true,,~,dynamic calc,"(""ACT"" - @PRIOR (""ACT"" , 2, @RELATIVE(""Years"",0)))/ ""ACT"";",,~,dynamic calc,"(([ACT] - (Years.CurrentMember.Lag(2, LEVEL),[ACT]).Value)/ (Years.CurrentMember.Lag(2, LEVEL),[ACT]).Value)*100 /* (Years.CurrentMember.Lag(2, LEVEL),[ACT]).Value */",0,,
+FCST_FCST-1v,Var_scen,Forecast vs Forecast Y-1,dynamic calc,false,,<none>,<none>,,,unspecified,none,,,,false,true,5bbc1741-f0ea-47d4-b2be-6ab6f2aa8ee3,FY13,FY27,Jan,Dec,true,,~,dynamic calc,"""FCST"" - @PRIOR (""FCST"" , 1, @RELATIVE(""Years"",0));",,~,dynamic calc,"[FCST] - (Years.CurrentMember.Lag(1, LEVEL),[FCST]).Value",0,,
+FCST_FCST-1p,Var_scen,Forecast vs Forecast Y-1 (%),dynamic calc,true,,<none>,<none>,,,percentage,none,,,,false,true,96ed8c3d-d783-4524-893f-807c90b396ba,FY13,FY27,Jan,Dec,true,,~,dynamic calc,"(""FCST"" - @PRIOR (""FCST"" , 1, @RELATIVE(""Years"",0)))/ ""FCST"";",,~,dynamic calc,"(([FCST] - (Years.CurrentMember.Lag(1, LEVEL),[FCST]).Value)/ (Years.CurrentMember.Lag(1, LEVEL),[FCST]).Value)*100 /* (Years.CurrentMember.Lag(1, LEVEL),[FCST]).Value */",0,,
+FCST_FCST_Ver-1v,Var_scen,Forecast vs Forecast Version-1,dynamic calc,false,,<none>,<none>,,,unspecified,none,,,,false,true,78f2f11a-2062-4661-8c6a-f87bad7b1a05,FY13,FY27,Jan,Dec,true,,~,dynamic calc,"""FCST"" - @PRIOR (""FCST"" , 1, @RELATIVE(""Version"",0));",,~,dynamic calc,"[FCST] - (Version.CurrentMember.Lag(1, LEVEL),[FCST]).Value",0,,
+FCST_FCST_Ver-1p,Var_scen,Forecast vs Forecast Version-1 (%),dynamic calc,true,,<none>,<none>,,,percentage,none,,,,false,true,5e417e19-a846-42af-97dc-39f0f94cd90c,FY13,FY27,Jan,Dec,true,,~,dynamic calc,"(""FCST"" - @PRIOR (""FCST"" , 1, @RELATIVE(""Version"",0)))/ ""FCST"";",,~,dynamic calc,"(([FCST] - (Version.CurrentMember.Lag(1, LEVEL),[FCST]).Value)/ (Version.CurrentMember.Lag(1, LEVEL),[FCST]).Value)*100 /* (Version.CurrentMember.Lag(1, LEVEL),[FCST]).Value */",0,,
