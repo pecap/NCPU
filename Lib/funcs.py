@@ -7,8 +7,8 @@ import pandas as pd                             # data analysis module. used to 
 import zipfile                                  # ZIP module
 
 # user credentials
-user = "a490304.IYehezkelov"
-pw = "A0547780121b"
+user = ""
+pw = ""
 
 #####################################################################################################
 ###########                                    FUNCTIONS                                  ###########
@@ -45,7 +45,7 @@ def runJob(job_type, job_name):
 
     # print results
     print('triggered LCM export for Scenario dimension')
-    print('request 1 status: ' + str(res.status_code))
+    print(res.status_code)
 
     #return reponse object
     return res
@@ -65,7 +65,7 @@ def downloadFile(pbcs_file, local_file):
 
     # print results
     print('file downloaded')
-    print('request 2 status: ' + str(res.status_code))
+    print(res.status_code)
 
     with open('./responses/'+local_file, 'wb') as handle:
         for chunk in res.iter_content(chunk_size=1024):
@@ -80,7 +80,7 @@ def downloadFile(pbcs_file, local_file):
 
 def uploadFile(file_name):
     """
-        uploads payload file to PBCX inbox
+        uploads payload file to PBCS inbox
         accepts 1 param:
         1) file_name = path of the file to be uploaded
     """
@@ -97,7 +97,7 @@ def uploadFile(file_name):
 
     # print results
     print('uploaded LCM package to PBCS')
-    print('request 4 status: ' + str(res.status_code))
+    print(res.status_code)
 
     #return reponse object
     return res
@@ -116,7 +116,7 @@ def deleteFile(file_name):
 
     # print results
     print('deleted existing "scenario_import.csv" from PBCS inbox')
-    print('request 3 status: ' + str(res.status_code))
+    print(res.status_code)
 
     #return reponse object
     return res
