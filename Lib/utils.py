@@ -67,13 +67,13 @@ def downloadFile(pbcs_file, local_file):
     print('file downloaded')
     print(res.status_code)
 
-    with open('./responses/'+local_file, 'wb') as handle:
+    with open('./data/'+local_file, 'wb') as handle:
         for chunk in res.iter_content(chunk_size=1024):
             handle.write(chunk)
 
     # extract 'scenario.zip'
-    zf = zipfile.ZipFile('./responses/'+local_file)
-    zf.extractall('./responses/content')
+    zf = zipfile.ZipFile('./data/'+local_file)
+    zf.extractall('./data/content')
     #return reponse object
     return res
 
@@ -85,7 +85,7 @@ def uploadFile(file_name):
         1) file_name = path of the file to be uploaded
     """
 
-    payload = open('./responses/content/'+file_name, 'rb').read()
+    payload = open('./data/content/'+file_name, 'rb').read()
 
     # headers & params
     headers = {'Content-Type':'application/octet-stream'}
@@ -131,8 +131,8 @@ def setStartPeriod(file_name, start_period):
     """
 
         # replace start period value with nPer
-    df = pd.read_csv('./responses/content/IYehezkelov_ExportedMetadata_Scenario.csv',encoding='utf-8')
+    df = pd.read_csv('./data/content/IYehezkelov_ExportedMetadata_Scenario.csv',encoding='utf-8')
     df.iloc[2, 20] = start_period
-    df[2:3].to_csv('./responses/content/Scenario_import.csv',encoding='utf-8', index=False)
+    df[2:3].to_csv('./data/content/Scenario_import.csv',encoding='utf-8', index=False)
 
     print('Forecast start period set to: ' + start_period)

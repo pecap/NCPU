@@ -1,4 +1,4 @@
-from Lib.funcs import *
+from lib.utils import *
 
 ###
 ### step 1 - trigger LCM export job
