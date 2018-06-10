@@ -20,8 +20,8 @@ def url():
 
     url =
     {
-        "jobs":"https://planning-test-a490304.pbcs.em2.oraclecloud.com/HyperionPlanning/rest/v3/applications/DELPHI/jobs",
-        "files":"https://planning-test-a490304.pbcs.em2.oraclecloud.com:443/interop/rest/11.1.2.3.600/applicationsnapshots"
+        "jobs":"https://planning-test-domain_name.pbcs.em2.oraclecloud.com/HyperionPlanning/rest/v3/applications/app_name/jobs",
+        "files":"https://planning-test-domain_name.pbcs.em2.oraclecloud.com:443/interop/rest/11.1.2.3.600/applicationsnapshots"
     }
 
     return url
