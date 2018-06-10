@@ -1,11 +1,10 @@
 def url():
     """returns object 'url' which contains all Oracle PBCS URL's"""
 
+    # url building blocks
     domain = '-'+'a490304'
     env = '-'+'test'
-
-    base = "https://planning"+env+".pbcs.em2.oraclecloud.com"
-
+    base = "https://planning"+env+domain+".pbcs.em2.oraclecloud.com"
     pln_ver = requests.get(url = 'https://planning-test-a490304.pbcs.em2.oraclecloud.com/HyperionPlanning/rest/', auth=HTTPBasicAuth(user, pw)) # get planning api version
     lcm_ver = requests.get(url = 'https://planning-test-a490304.pbcs.em2.oraclecloud.com:443/interop/rest/', auth=HTTPBasicAuth(user, pw)) # get lcm api version
 
