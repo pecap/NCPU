@@ -4,8 +4,11 @@ def url():
     # url building blocks
     domain = '-'+'a490304'
     env = '-'+'test'
+<<<<<<< HEAD
     app_name = 'DELPHI'
 
+=======
+>>>>>>> aa8ab5b429e73b40f6f062b575235cc09bb37738
     base = "https://planning"+env+domain+".pbcs.em2.oraclecloud.com"
     pln_ver = requests.get(url = 'https://planning-test-a490304.pbcs.em2.oraclecloud.com/HyperionPlanning/rest/', auth=HTTPBasicAuth(user, pw)) # get planning api version
     lcm_ver = requests.get(url = 'https://planning-test-a490304.pbcs.em2.oraclecloud.com:443/interop/rest/', auth=HTTPBasicAuth(user, pw)) # get lcm api version
