@@ -17,7 +17,8 @@ pw = ""
 
 def url():
     """returns object 'url' which contains all Oracle PBCS URL's"""
-
+    domain = 'a490304'
+    
     url = {
             "jobs":"https://planning-test-a490304.pbcs.em2.oraclecloud.com/HyperionPlanning/rest/v3/applications/DELPHI/jobs",
             "files":"https://planning-test-a490304.pbcs.em2.oraclecloud.com:443/interop/rest/11.1.2.3.600/applicationsnapshots"
