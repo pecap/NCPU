@@ -16,23 +16,29 @@ def url():
     pw = "pw"
 
     # get API versions
-    getPlnVersion = requests.get(url = base+'/'+'HyperionPlanning/rest/', auth=HTTPBasicAuth(user, pw)) # get planning api version
+    res = requests.get(url = base+'/'+'HyperionPlanning/rest/', auth=HTTPBasicAuth(user, pw)) # get planning api version
 
-    pVer = json.loads(getPlnVersion.text)
-    items = pVer['items']
+    res_content = json.loads(getPlnVersion.text)
+    items = res_content['items']
 
     for i in items:
         if i['isLatest'] == True:
             pln_ver = i['version']
 
-    getLcmVersion = requests.get(url = base+':'+'443/interop/rest/', auth=HTTPBasicAuth(user, pw)) # get lcm api version
+    res = requests.get(url = base+':'+'443/interop/rest/', auth=HTTPBasicAuth(user, pw)) # get lcm api version
 
-    lVer = json.loads(getLcmVersion.text)
-    lcm_ver = lVer['items'][0]['version']
+    res_content = json.loads(getLcmVersion.text)
+    lcm_ver = res_content['items'][0]['version']
 
     # planning URL
     planning_url = base+'/'+'HyperionPlanning/rest/'+pln_ver
     # migration URL
     lcm_url = base+':'+'443/interop/rest/'+lcm_ver
+
+    url =
+    {
+        'jobs':planning_url,
+        'files':lcm_url
+    }
 
     return url
