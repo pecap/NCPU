@@ -13,9 +13,17 @@ def url():
     domain = '-'+'domain_name'
     env = '-'+'env_type'
     app_name = 'app_name'
+<<<<<<< HEAD
 
     # base url
     base = "https://planning"+env+domain+".pbcs.em2.oraclecloud.com"
+=======
+
+    # base url
+    base = "https://planning"+env+domain+".pbcs.em2.oraclecloud.com"
+
+
+>>>>>>> 0a9fbfff1db1e398a93005de7f9e01ababf85d00
 
     # get API versions
     res = requests.get(url = base+'/'+'HyperionPlanning/rest/', auth=HTTPBasicAuth(user, pw)) # get planning api version
