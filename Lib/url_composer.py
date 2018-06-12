@@ -17,7 +17,7 @@ def url():
     # base url
     base = "https://planning"+env+domain+".pbcs.em2.oraclecloud.com"
 
-    # get API versions
+    # get latest planning API version
     res = requests.get(url = base+'/'+'HyperionPlanning/rest/', auth=HTTPBasicAuth(user, pw)) # get planning api version
 
     res_content = json.loads(getPlnVersion.text)
@@ -27,10 +27,17 @@ def url():
         if i['isLatest'] == True:
             pln_ver = i['version']
 
+    # get latest lcm API version
     res = requests.get(url = base+':'+'443/interop/rest/', auth=HTTPBasicAuth(user, pw)) # get lcm api version
 
     res_content = json.loads(getLcmVersion.text)
-    lcm_ver = res_content['items'][0]['version']
+    items = res_content['items']
+
+    for i in items:
+        if i['latest'] == True:
+            lcm_ver = i['version']
+
+    # lcm_ver = res_content['items'][0]['version']
 
     # planning URL
     planning_url = base+'/'+'HyperionPlanning/rest/'+pln_ver
