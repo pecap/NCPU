@@ -27,11 +27,7 @@ def url():
         if i['isLatest'] == True:
             pln_ver = i['version']
 
-<<<<<<< HEAD
     # get latest lcm API version
-=======
-    # get latest migration (lcm) API version
->>>>>>> b51977f23650dda39ef109fa4880b69cc744fb4f
     res = requests.get(url = base+':'+'443/interop/rest/', auth=HTTPBasicAuth(user, pw)) # get lcm api version
 
     res_content = json.loads(getLcmVersion.text)
